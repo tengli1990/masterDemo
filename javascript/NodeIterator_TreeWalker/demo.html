@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>通过节点封装获取ID方法</title>
+	</head>
+	<body>
+		<div id="tree"></div>
+		<div id="node" class="node"></div>
+		<script type="text/javascript">
+			Document.prototype.getId = function(id){
+			   var filter = function(node){
+			   	  return node.id == id ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+			   }
+			    
+			    var iterator = document.createNodeIterator(document,NodeFilter.SHOW_ELEMENT,filter,false);
+			    console.log(iterator)
+			   var node = iterator.nextNode();
+							    
+			    return node;
+			}
+		</script>
+	</body>
+</html>
