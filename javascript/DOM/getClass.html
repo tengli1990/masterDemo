@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>获取元素class</title>
+	</head>
+	<style type="text/css">
+		.on{ color:red;}
+		.blue{ color: blue;}
+	</style>
+	<body>
+		<ul id="box" class="box">
+			<li class="blue on">栏目一</li>
+			<li>栏目二</li>
+			<li>栏目三</li>
+			<li>栏目四</li>
+			<li>栏目五</li>
+			<li>栏目六</li>
+		</ul>
+		<ul id="box1" class="box1">
+			<li class="blue on">栏目一</li>
+			<li>栏目二</li>
+			<li>栏目三</li>
+			<li>栏目四</li>
+			<li>栏目五</li>
+			<li>栏目六</li>
+		</ul>
+		
+		<script type="text/javascript">
+			var box = document.getElementById("box1")
+			var li = box.getElementsByTagName("li");
+				
+				siblings(getByClass("on")[1],function(i){
+					this.style.background = "red";
+					
+				})
+			
+			
+			
+			function getByClass(cName,selector){
+				var target = [] ,
+				    elems = selector&&selector.nodeType ? 
+				    		selector.getElementsByTagName("*") :
+				    		document.getElementsByTagName("*"),
+					lens = elems.length,
+					elem,i=0,
+					reg = new RegExp(cName);
+				for(;i<lens;i++){
+					elem = elems[i].className.match(reg);
+					if(elem&&elem[0] === cName){
+						target.push(elems[i]);
+					}
+				}
+				target.length > 1 ? target.__proto__ = HTMLCollection.prototype : target[0];
+				 return target
+			}
+			
+			function siblings(elem,callback){
+				var n = (elem.parentNode || {}).firstChild,
+					r = [],
+					i=0;
+				for(; n ; ){
+					if(n.nodeType === 1 && elem !== n){
+						r.push(n)
+						callback&&callback.call(n,i)
+					}
+					n.nodeType===1?i++:i;
+					n = n.nextSibling
+				}
+				return r;
+			}
+		</script>
+	</body>
+</html>
