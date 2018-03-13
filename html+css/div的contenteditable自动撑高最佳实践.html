@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../css/reset.css" />
+	</head>
+	<style>
+		a{color: blue;}
+		body{padding-top: 100px;}
+		.test{width:600px; min-height: 100px; border:1px solid #ccc; margin:0 auto; padding:20px; font-size: 18px;}
+		h1,a,h2{display:block; width: 500px; margin:0 auto; font-size:30px; text-align:center }
+		
+		/*格式化复制信息*/
+		.user-modify{
+			-webkit-user-modify: read-write-plaintext-only;
+		}
+		
+		.textarea{
+			 display: block;
+			width:600px; height:100px; border:1px solid #ccc; margin:0 auto; padding:20px; font-size: 18px;
+		}
+	</style>
+	<body>
+		<h1>应用user-modify</h1>
+		<!--应用contenteditable="true"使div可变换为输入状态-->
+		<div id="test" class="test user-modify" contenteditable="true"></div>
+		<h2>可设置隐藏域</h2>
+		<textarea id="write-box" class="textarea"></textarea>
+		<a target="_blank" class="bold" href="http://www.zhangxinxu.com/wordpress/2016/01/contenteditable-plaintext-only/">示例链接</a>	
+		<a target="_blank" href="http://www.zhangxinxu.com/study/201601/user-modify.html">属性测试地址</a>
+	</body>
+	<script type="text/javascript">
+		function $(id){
+			return typeof id == "string" ? document.getElementById(id) : null
+		}
+		
+		$("test").onkeyup = function(){
+			 $("write-box").innerHTML = this.innerHTML
+		}
+	</script>
+</html>

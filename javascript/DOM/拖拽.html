@@ -1,58 +1,140 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	    <meta name="viewport" content="width="/>
+	    <meta name="viewport" content="width=750, user-scalable=no" />
 		<meta charset="UTF-8">
 		<title></title>
 	</head>
 	<style type="text/css">
-		*{padding:0; margin: 0;}
-		body{text-align: center; width:340px;}
+		*{padding:0; margin: 0; box-sizing: border-box; }
+		body{text-align: center; width:750px; font-size: 0;}
 		.draw{
 			top: 100px;
 			position: relative;
 			display: inline-block;
-			width: 300px;
+			width: 600px;
 			height: 50px;
 			border: 1px solid green;
 		}
-		.draw .line{
+		.draw .beautify-line{
+			position: relative;
 			position: absolute;
+			left: 0;
 			top:50%;
 			height: 5px;
 			width: 100%;
 			margin-top:-2.5px;
 			background: #08BCC5;
 		}
+		.draw .beautify-line i{
+			position: absolute;
+			top: 0;
+			left: 0;
+			display: block;
+			width: 0;
+			height: 100%;
+			background: #ccc;
+			
+		}
+		.draw .beautify-line span{
+			position: absolute;
+			top: 0;
+			right: 0;
+			display: block;
+			width: 0;
+			height: 100%;
+			background: #ccc;
+			
+		}
 		.draw .element{
 			position: absolute;
 			top: 50%;
 			left: 0;
-			width: 16px;
-			height: 16px;
-			margin-top: -8px;
-			margin-left: -8px;
+			width: 32px;
+			height: 32px;
+			margin-top: -16px;
+			margin-left: -16px;
 			background:#000000;
 			border-radius: 50%;
+			z-index: 5;
 			
+		}
+		.draw .element.e1{background: #00B83F;}
+		.draw .element.e2{right: 0; left: auto; margin-right: -16px; margin-left: 0;}
+		.price{
+			font-size: 14px;
 		}
 	</style>
 	<body>
-	<div class="draw">
+	<div class="draw" id="draw">
 		 <div class="line"></div>
-		 <span class="element"></span>
+		 <div class="beautify-line1"><i></i><span></span></div>
+		 <div class="beautify-line2"><i></i><span></span></div>
+		 <span class="element e1"></span>
+		 <span class="element e2"></span>
 	</div>	
+	<div class="price">
+		<span  id="priceStart"></span>
+		<span  id="priceEnd"></span>
+	</div>
 		<script type="text/javascript">
-			 var draw = getByClass("draw")
-			 var line = getByClass("line")
-			 var ele = getByClass("element")
-			 console.log(ele)
-			 ele.addEventListener("touchmove",function(e){
-			 	 var ev = e || window.event;
-			 	 alert(e.clientX)
-			 },false)
-			
-			
+			// selectCash(299,20000,20100)
+			 
+			 function selectCash(maxPrice,start,end){
+			 	 var maxPrice = maxPrice 
+			 	 var ret1 = document.getElementById("priceStart")
+			 	 var ret2 = document.getElementById("priceEnd")
+			 	 var box = document.getElementById("draw"),
+			 	 	 grayBar1 = box.getElementsByTagName("i")[0],
+			 	 	 grayBar2 = box.getElementsByTagName("span")[0],
+			 	 	 ele1 = getByClass("e1",box)[0],
+			 	 	 ele2 = getByClass("e2",box)[0],
+			 	 	 x1,x2,
+			 	 	 boxLeft = box.offsetLeft,
+			 	 	 boxWidth = box.offsetWidth,
+			 	 	 boxRight = boxWidth + boxLeft;
+			 	 	
+			 	 if(start){
+			 	 	x1 = start/(maxPrice*100)*(boxWidth-31)
+			 	 	grayBar1.style.width = x1 + "px";
+					ele1.style.left = x1 + "px";
+			 	 }
+			 	 
+			 	 if(end){
+			 	 	
+			 	    x2 = (maxPrice - end/100)/maxPrice * (boxWidth-31);
+			 	    console.log(x2)
+			 	 	grayBar2.style.width = x2 + "px";
+			 	 	ele2.style.right = x2 +"px"; 
+			 	 }
+			 	 
+			 	 var maxAndmin = function(e){
+			 	 	 x1 = e.targetTouches[0].pageX-boxLeft;
+				 	 x2 = boxRight - e.targetTouches[0].pageX;
+				 	 x1 = x1 > ele2.offsetLeft-16 ? ele2.offsetLeft-16 : x1;
+				 	 x2 = x2 >boxWidth - (ele1.offsetLeft+ele1.offsetWidth +18) ?boxWidth - (ele1.offsetLeft+ele1.offsetWidth+18) : x2;
+				 	 x1 = x1 < 0 ? 0 : x1;
+				 	 x2 = x2 < 0 ? 0 : x2;
+				 	 
+				 	 if(e.target === ele1){
+				 	 	ret1.innerHTML = "¥"+(parseInt(x1/(boxWidth-31)*maxPrice)*100).toFixed(2);
+				 	 	grayBar1.style.width = x1 + "px";
+						ele1.style.left = x1 + "px";
+				 	 }
+				 	 if(e.target === ele2){
+				 	 	ret2.innerHTML =  "¥"+((maxPrice-parseInt(x2/(boxWidth-31 )*maxPrice))*100).toFixed(2);
+				 	 	grayBar2.style.width = x2 + "px";
+				 	 	ele2.style.right = x2 +"px"; 
+				 	 }
+			 	 }
+				 box.addEventListener("touchstart",function(e){
+				 	 maxAndmin(e)
+				 },false)
+				 
+				 box.addEventListener("touchmove",function(e){
+				 	 maxAndmin(e)
+				 },false)
+			}
 			function getByClass(cName,selector){
 				var target = [] ,
 				    elems = selector&&selector.nodeType ? 
@@ -60,14 +142,15 @@
 				    		document.getElementsByTagName("*"),
 					lens = elems.length,
 					elem,i=0,
-					reg = new RegExp(cName);
+					reg = new RegExp("(\\b"+cName+"\\b)","g");
+					console.log(reg)
 				for(;i<lens;i++){
 					elem = elems[i].className.match(reg);
 					if(elem&&elem[0] === cName){
 						target.push(elems[i]);
 					}
 				}
-				target = target.__proto__ = HTMLCollection.prototype
+				//target = target.__proto__ = HTMLCollection.prototype
 				 return target
 			}
 		</script>
